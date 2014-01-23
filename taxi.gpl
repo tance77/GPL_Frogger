@@ -1,32 +1,56 @@
-int window_width = 500;
-int window_height = 500;
+int window_x = 0;
+int window_y = 0;
+int window_width = 600;
+int window_height = 600;
 string window_title = "taxi driver";
 
 int car_width = 40;
 int car_height = 60;
-int car_increment = 40;
+int car_increment_x = 10;
+int car_increment_y = 10;
 int enemy_size = 10;
-int enemy_x_increment = 5;
 int enemy_y_increment = 2;
 //logical status = true;
 
 forward animation enemy_animate(circle cur_enemy);
 
-rectangle car(x = (window_width/2) - (car_width/2), y = window_height/10, w = car_width, h = car_height);
-circle enemy(x = window_width/2, y = window_height/2, radius = enemy_size/2, animation_block = enemy_animate);
+triangle car(x = (window_width/2) - (car_width/2), y = window_height/30, size = car_width);
+circle enemy(x = window_width/2, y = window_height, radius = enemy_size/2, animation_block = enemy_animate);
 
 animation enemy_animate(circle cur_enemy){
         if(cur_enemy.y < 0)
                 enemy_size = 0;
-        if(cur_enemy.y == cur_enemy.y)
-                enemy_y_increment
-        if(cur_enemy touches car){
-       //         textbox title(x = 10, y = 10, text = "game over", size = 0.1);
-      //          status = false;
+        // if(cur_enemy.y == cur_enemy.y)
+        // cur_enemy += enemy_y_increment;
+        if(enemy touches car){
+                enemy_size = 0;
         }
+        if(cur_enemy.x)
+                cur_enemy.y -= enemy_y_increment;
 
-  //      if(status == false)
-    //    {
-        cur_enemy.x += enemy_x_increment;
-       // }
+        //      if(status == false)
+        //    {
+        //cur_enemy.x += enemy_x_increment;
+        // }
+}
+on leftarrow
+{
+        if(car.x > 0)
+                car.x -= car_increment_x;
+}
+on rightarrow
+{
+        if(car.x < window_width - car_width)
+                car.x += car_increment_y;
+
+}
+on uparrow
+{
+        if(car.y < window_height - car_height)
+                car.y += car_increment_y;
+}
+on downarrow
+{
+        if(car.y > 0)
+                car.y -= car_increment_y;
 }
