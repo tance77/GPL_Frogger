@@ -4,53 +4,71 @@ int window_width = 600;
 int window_height = 600;
 string window_title = "taxi driver";
 
-int car_width = 40;
-int car_height = 60;
-int car_increment_x = 10;
-int car_increment_y = 10;
+int i;
+int frogger_width = 40;
+int frogger_height = 40;
+int frogger_increment_x = 20;
+int frogger_increment_y = 20;
+int traffic_inc_x = 20;
 int enemy_size = 10;
 int enemy_y_increment = 2;
+int status = 1;
+int number_of_cars = 2;
 //logical status = true;
 
-forward animation enemy_animate(circle cur_enemy);
+forward animation drive(pixmap truck);
+pixmap frogger(x = (window_width/2) - (frogger_width/2), y=0, filename="frog.bmp");
+pixmap cars[number_of_cars];
 
-triangle car(x = (window_width/2) - (car_width/2), y = window_height/30, size = car_width);
-circle enemy(x = window_width/2, y = window_height, radius = enemy_size/2, animation_block = enemy_animate);
+initialization
+{
+        for (i = 0; i < number_of_cars; i += 1)
+        {
 
-animation enemy_animate(circle cur_enemy){
-        if(cur_enemy.y < 0)
-                enemy_size = 0;
-        // if(cur_enemy.y == cur_enemy.y)
-        // cur_enemy += enemy_y_increment;
-        if(enemy touches car){
-                enemy_size = 0;
+//                cars[i].animation_block = truck;;
+                cars[i].x = window_width - (600/(i+1));
+                cars[i].y = window_height/4;
+                cars[i].filename = "truck.bmp";
         }
-        if(cur_enemy.x)
-                cur_enemy.y -= enemy_y_increment;
+}
 
-        //      if(status == false)
-        //    {
-        //cur_enemy.x += enemy_x_increment;
-        // }
+
+//rectangle car(x = (window_width/2) - (car_width/2), h = car_height, w = car_width);
+//rectangle car(x = window_width/4, y = window_height/8, w = 40, h = 20);
+//rectangle car(x = 10, y = 10, h = 10, w = 10);
+animation drive(pixmap truck){
+// if(cur_car.x > 0)
+//      cur_car.x += car_increment_x;
+// if(cur_car.y == cur_enemy.y)
+// cur_car += enemy_y_increment;
+// if(car touches frogger){
+//         enemy_size = 0;
+// }
+//      cur_car.x += traffic_inc_x;
+
+//      if(status == false)
+//    {
+//cur_enemy.x += enemy_x_increment;
+// }
 }
 on leftarrow
 {
-        if(car.x > 0)
-                car.x -= car_increment_x;
+        if(frogger.x > 0)
+                frogger.x -= frogger_increment_x;
 }
 on rightarrow
 {
-        if(car.x < window_width - car_width)
-                car.x += car_increment_y;
+        if(frogger.x < window_width - frogger_width)
+                frogger.x += frogger_increment_y;
 
 }
 on uparrow
 {
-        if(car.y < window_height - car_height)
-                car.y += car_increment_y;
+        if(frogger.y < window_height - frogger_height)
+                frogger.y += frogger_increment_y;
 }
 on downarrow
 {
-        if(car.y > 0)
-                car.y -= car_increment_y;
+        if(frogger.y > 0)
+                frogger.y -= frogger_increment_y;
 }
