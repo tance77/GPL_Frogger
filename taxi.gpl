@@ -1,31 +1,31 @@
 int window_x = 0;
 int window_y = 0;
-int window_width = 600;
-int window_height = 600;
+int window_width = 800;
+int window_height = 800;
 string window_title = "taxi driver";
 
 int i;
 int frogger_width = 40;
 int frogger_height = 40;
-int frogger_increment_x = 20;
-int frogger_increment_y = 20;
-int traffic_inc_x = 20;
+int frogger_increment_x = 25;
+int frogger_increment_y = 35;
+int traffic_inc_x = 5;
 int enemy_size = 10;
 int enemy_y_increment = 2;
 int status = 1;
-int number_of_cars = 2;
+int number_of_trucks = 2;
 //logical status = true;
 
 forward animation drive(pixmap truck);
 pixmap frogger(x = (window_width/2) - (frogger_width/2), y=0, filename="frog.bmp");
-pixmap cars[number_of_cars];
+pixmap cars[number_of_trucks];
 
 initialization
 {
-        for (i = 0; i < number_of_cars; i += 1)
+        for (i = 0; i < number_of_trucks; i += 1)
         {
 
-//                cars[i].animation_block = truck;;
+                cars[i].animation_block = drive;
                 cars[i].x = window_width - (600/(i+1));
                 cars[i].y = window_height/4;
                 cars[i].filename = "truck.bmp";
@@ -37,28 +37,33 @@ initialization
 //rectangle car(x = window_width/4, y = window_height/8, w = 40, h = 20);
 //rectangle car(x = 10, y = 10, h = 10, w = 10);
 animation drive(pixmap truck){
-// if(cur_car.x > 0)
-//      cur_car.x += car_increment_x;
-// if(cur_car.y == cur_enemy.y)
-// cur_car += enemy_y_increment;
-// if(car touches frogger){
-//         enemy_size = 0;
-// }
-//      cur_car.x += traffic_inc_x;
+        // if(cur_car.x > 0)
+        //      cur_car.x += car_increment_x;
+        // if(cur_car.y == cur_enemy.y)
+        // cur_car += enemy_y_increment;
+        // if(car touches frogger){
+        //         enemy_size = 0;
+        // }
+        //      cur_car.x += traffic_inc_x;
 
-//      if(status == false)
-//    {
-//cur_enemy.x += enemy_x_increment;
-// }
+        //      if(status == false)
+        //    {
+        //cur_enemy.x += enemy_x_increment;
+        // }
+        if(truck.x == 0)
+        {
+                truck.x = window_width;
+        }
+        truck.x -= traffic_inc_x;
 }
 on leftarrow
 {
-        if(frogger.x > 0)
+        if(frogger.x > 40)
                 frogger.x -= frogger_increment_x;
 }
 on rightarrow
 {
-        if(frogger.x < window_width - frogger_width)
+        if(frogger.x < window_width - frogger_width - 40)
                 frogger.x += frogger_increment_y;
 
 }
