@@ -1,0 +1,362 @@
+int window_x = 0;
+int window_y = 0;
+double window_red = 0.0;
+double window_green = 0.0;
+double window_blue = 0.0;
+int window_width = 800;
+int window_height = 800;
+string window_title = "taxi driver";
+int animation_speed = 70;
+
+//for loop variables
+int i;
+int j;
+
+
+//main character
+int frogger_width = 40;
+int frogger_height = 40;
+int frogger_increment_x = 25;
+int frogger_increment_y = 26;
+
+//traffic control speeds
+int car_inc_x = 4;
+int tractor_inc_x = 16;
+int traffic_inc_x = 2;
+int traffic2_inc_x = 8;
+int cruiser_inc_x = 24;
+
+//logs need to be broken up into sections so the game recognizes that the frog can jump on it
+
+int small_log_inc_x = 10;
+int medium_log_inc_x = 8;
+int large_log_inc_x = 6;
+int alligator_log_inc_x = 15;
+int alligator_open_log_inc_x = 15;
+
+int status = 1;
+
+int truck_pos = 0; 
+int truck_pos2= 800;
+int car_pos = 0;
+int tractor_pos = 0;
+int cruiser_pos = 0;
+
+int small_log_pos = 0;
+int medium_log_pos = 0;
+int large_log_pos = 0;
+int alligator_log_pos = 150;
+int alligator_open_log_pos = 400;
+
+
+int number_of_trucks = 4;
+int number_of_trucks2 = 3;
+int number_of_cars = 5;
+int number_of_tractors = 4;
+int number_of_cruisers = 5;
+int number_of_small_logs = 3;
+int number_of_medium_logs = 3;
+int number_of_large_logs = 3;
+int number_of_alligator_logs = 2;
+int number_of_alligator_open_logs = 2;
+
+
+//logical status = true;
+
+//bottom to top order of animations
+
+forward animation drive(pixmap truck);
+forward animation drive2(pixmap racecar);
+forward animation drive3(pixmap truck2);
+forward animation drive4(pixmap tractor);
+forward animation drive5(pixmap cruiser);
+
+//forward animation swim3(pixmap small_log);
+//forward animation swim2(pixmap medium_log);
+forward animation swim(pixmap large_log);
+forward animation swim2(pixmap medium_log);
+forward animation swim3(pixmap small_log);
+forward animation swim4(pixmap alligator_log);
+forward animation swim5(pixmap alligator_open_log);
+
+rectangle leftboundry(x= 0, y = 0, h = window_height, w = 120, red = 0.0, blue = 0.0, green = 0.0);
+rectangle rightboundry(x = window_width - 120, y = 0, h = window_height, w = 120, red = 0.0, blue = 0.0, green = 0.0);
+
+pixmap cars[number_of_trucks];
+pixmap cars2[number_of_cars];
+pixmap cars3[number_of_trucks2];
+pixmap cars4[number_of_tractors];
+pixmap cars5[number_of_cruisers];
+
+
+pixmap frogger(x = (window_width/2) - (frogger_width/2), y=0, filename="frog.bmp");
+
+pixmap largelogs[number_of_large_logs];
+pixmap mediumlogs[number_of_medium_logs];
+pixmap smalllogs[number_of_small_logs];
+pixmap alligators[number_of_alligator_logs];
+pixmap alligators_open[number_of_alligator_open_logs];
+
+rectangle water(x = 0, y = 182, w = window_width, h = 129, red = 0.0, blue = 1.0, green = 0.0);
+
+pixmap finish(x = 120, y = 311, filename = "finish.bmp", drawing_order = 400);
+pixmap sidewalkbottom(x = 0, y = 0, filename="background.bmp");
+pixmap sidewalktop(x=0, y =155, filename="background.bmp");
+
+initialization
+{
+        for (i = 0; i < number_of_trucks; i += 1) //first row of trucks actual row 1
+        {
+
+                cars[i].animation_block = drive;
+                cars[i].x = truck_pos;
+                truck_pos += 200;
+                cars[i].y = 26;
+                cars[i].filename = "truck.bmp";
+
+        }
+        for (i = 0; i < number_of_trucks2; i +=1) //second row of trucks actual row 3
+        {
+
+                cars3[i].animation_block = drive3;
+                cars3[i].x = truck_pos2;
+                truck_pos2 -= 266;
+                cars3[i].y = 78;
+                cars3[i].filename = "truck.bmp"; 
+        }
+        for (i = 0; i < number_of_cars; i += 1) //first row of cars actual row 2
+        {
+                cars2[i].animation_block = drive2;
+                cars2[i].x = car_pos;
+                car_pos += 160;
+                cars2[i].y = 52;
+                cars2[i].filename = "car.bmp";
+        }
+        for (i = 0; i < number_of_tractors; i += 1) //first row of tractors actual row 4
+        {
+                cars4[i].animation_block = drive4;
+                cars4[i].x = tractor_pos;
+                tractor_pos += 200;
+                cars4[i].y = 104;
+                cars4[i].filename = "tractor.bmp";
+        }
+        for (i = 0; i < number_of_cruisers; i += 1) //first row of cruisers  actual row 5
+        {
+                cars5[i].animation_block = drive5;
+                cars5[i].x = cruiser_pos;
+                cruiser_pos += 160;
+                cars5[i].y = 130;
+                cars5[i].filename = "cruiser.bmp";
+        }
+
+        for (i = 0; i < number_of_large_logs; i += 1) //first row of in water
+        {
+                largelogs[i].animation_block = swim;
+                largelogs[i].x = large_log_pos;
+                large_log_pos += 266;
+                largelogs[i].y = 182;
+                largelogs[i].filename = "biglog.bmp";
+        }
+        for (i = 0; i < number_of_medium_logs; i += 1) //second row of in water
+        {
+                mediumlogs[i].animation_block = swim2;
+                mediumlogs[i].x = medium_log_pos;
+                medium_log_pos += 266;
+                mediumlogs[i].y = 208;
+                mediumlogs[i].filename = "mediumlog.bmp";
+        }
+        for(i=0; i < number_of_small_logs; i += 1) //4th row in water
+        {
+                smalllogs[i].animation_block = swim3;
+                smalllogs[i].x = small_log_pos;
+                small_log_pos += 266;
+                smalllogs[i].y = 260;
+                smalllogs[i].filename = "smallLog.bmp";
+        }
+        for(i=0; i < number_of_alligator_logs; i += 1) // 3rd row in water
+        {
+                alligators[i].animation_block = swim4;
+                alligators[i].x = alligator_log_pos;
+                alligator_log_pos += 150;
+                alligators[i].y = 234;
+                alligators[i].filename = "alligatorclose.bmp";
+        }
+        for(i=0; i < number_of_alligator_logs; i += 1) // 3rd row in water open alligators
+        {
+                alligators_open[i].animation_block = swim5;
+                alligators_open[i].x = alligator_open_log_pos;
+                alligator_open_log_pos += 400;
+                alligators_open[i].y = 234;
+                alligators_open[i].filename = "alligatoropen.bmp";
+        }
+}
+
+
+animation drive(pixmap truck){
+
+        if(truck touches frogger)
+        {
+                frogger.x = (window_width/2) - (frogger_width/2);
+                frogger.y = 0;
+                frogger.filename = "frog.bmp";
+        }
+        if(truck.x == 0)
+        {
+                truck.x = window_width;
+        }
+        truck.x -= traffic_inc_x;
+}
+animation drive2(pixmap racecar){
+        if(racecar touches frogger)
+        {
+                frogger.x = (window_width/2) - (frogger_width/2);
+                frogger.y = 0;
+                frogger.filename = "frog.bmp";
+        }
+        if(racecar.x >= 800)
+        {
+                racecar.x = 0;
+        }
+        racecar.x += car_inc_x;
+}
+animation drive3(pixmap truck2){
+        if(truck2 touches frogger)
+        {
+                frogger.x = (window_width/2) - (frogger_width/2);
+                frogger.y = 0;
+                frogger.filename = "frog.bmp";
+
+        }
+        if(truck2.x <= 0)
+        {
+                truck2.x = window_width;
+        }
+        truck2.x -= traffic2_inc_x;
+}
+animation drive4(pixmap tractor){
+        if(tractor touches frogger)
+        {
+                frogger.x = (window_width/2) - (frogger_width/2);
+                frogger.y = 0;
+                frogger.filename = "frog.bmp";
+        }
+        if(tractor.x >= 800)
+        {
+                tractor.x = 0;
+        }
+
+        tractor.x += tractor_inc_x;
+}
+animation drive5(pixmap cruiser){
+        if(cruiser touches frogger)
+        {
+                frogger.x = (window_width/2) - (frogger_width/2);
+                frogger.y = 0;
+                frogger.filename = "frog.bmp";
+        }
+        if(cruiser.x <= 0)
+        {
+                cruiser.x = window_width;
+        }
+        cruiser.x -= cruiser_inc_x;
+}
+animation swim(pixmap large_log) //water section starts
+{
+        if(frogger.y >= 182 && frogger.y <= 311)
+        {
+
+                if(frogger touches largelogs[0] || frogger touches largelogs[1] || frogger touches largelogs[2])
+                {
+
+                        print("frogger.y = " + frogger.y + ",frogger.x = " + frogger.x);
+                }
+                else if(frogger touches mediumlogs[0] || frogger touches mediumlogs[1] || frogger touches mediumlogs[2])
+                {
+
+                        print("frogger.y = " + frogger.y + ",frogger.x = " + frogger.x);
+                }
+                else if(frogger touches smalllogs[0] || frogger touches smalllogs[1] || frogger touches smalllogs[2]){}
+                else if(frogger touches alligators[0] || frogger touches alligators[1]){}
+                else if(frogger touches alligators_open[0]|| frogger touches alligators_open[1]){}
+                else
+                {
+                        frogger.x = (window_width/2) - (frogger_width/2);
+                        frogger.y = 0;
+                        frogger.filename = "frog.bmp";
+                }
+        }
+
+
+        if(large_log touches frogger)
+        {
+                frogger.x += large_log_inc_x;
+        }
+        if(large_log.x >= window_width)
+        {
+                large_log.x = 0;
+        }
+        large_log.x += large_log_inc_x;
+}
+animation swim2(pixmap medium_log)
+{
+        if(medium_log touches frogger)
+                frogger.x -= medium_log_inc_x;
+        if(medium_log.x <= 0)
+                medium_log.x = window_width;
+        medium_log.x -= medium_log_inc_x;
+}
+animation swim3(pixmap small_log) //small logs row 4
+{
+        if(small_log touches frogger)
+                frogger.x -= small_log_inc_x;
+        if(small_log.x <= 0)
+                small_log.x = window_width;
+        small_log.x -= small_log_inc_x;
+}
+animation swim4(pixmap alligator_log) //close aligators
+{
+        if(alligator_log touches frogger)
+                frogger.x += alligator_log_inc_x;
+        if(alligator_log.x >= window_width)
+                alligator_log.x = 0;
+        alligator_log.x += alligator_log_inc_x;
+}
+animation swim5(pixmap alligator_open_log) //open aligators
+{
+        if(alligator_open_log touches frogger)
+                frogger.x += alligator_open_log_inc_x;
+        if(alligator_open_log.x >= window_width)
+                alligator_open_log.x = 0;
+        alligator_open_log.x += alligator_open_log_inc_x;
+}
+
+on leftarrow
+{
+        if(frogger.x > 120)
+                frogger.x -= frogger_increment_x;
+        frogger.filename = "frogleft.bmp";
+       }
+        on rightarrow
+        {
+                if(frogger.x < window_width - frogger_width - 120)
+                        frogger.x += frogger_increment_y;
+                frogger.filename = "frogright.bmp";
+
+
+        }
+        on uparrow
+        {
+                if(frogger.y < window_height - frogger_height)
+                        frogger.y += frogger_increment_y;
+                frogger.filename = "frog.bmp";
+
+
+
+        }
+        on downarrow
+        {
+                if(frogger.y > 0)
+                        frogger.y -= frogger_increment_y;
+                frogger.filename = "frogdown.bmp";
+
+        }
