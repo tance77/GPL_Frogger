@@ -4,101 +4,127 @@ double window_red = 0.0;
 double window_green = 0.0;
 double window_blue = 0.0;
 int window_width = 800;
-int window_height = 800;
-string window_title = "taxi driver";
+int window_height = 361;
+string window_title = "Frogger";
 int animation_speed = 70;
 
 //for loop variables
 int i;
 int j;
 
-
 //main character
 int frogger_width = 40;
 int frogger_height = 40;
-int frogger_increment_x = 25;
+int frogger_increment_x = 28;
 int frogger_increment_y = 26;
 
-//traffic control speeds
+//enemy increments
 int car_inc_x = 4;
 int tractor_inc_x = 16;
 int traffic_inc_x = 2;
 int traffic2_inc_x = 8;
 int cruiser_inc_x = 24;
-
-//logs need to be broken up into sections so the game recognizes that the frog can jump on it
-
-int small_log_inc_x = 10;
+int small_log_inc_x = 6;
 int medium_log_inc_x = 8;
 int large_log_inc_x = 6;
 int alligator_log_inc_x = 15;
 int alligator_open_log_inc_x = 15;
+int turtle_log_inc_x = 13;
 
-int status = 1;
+//win objectives
+int winstatus = 0;
+int myscore = 0;
+int timededuction = 100;
+int scoretimer = 0;
 
+//starting positions of enemies
+int live_pos = 0;
 int truck_pos = 0; 
 int truck_pos2= 800;
 int car_pos = 0;
 int tractor_pos = 0;
 int cruiser_pos = 0;
-
 int small_log_pos = 0;
 int medium_log_pos = 0;
 int large_log_pos = 0;
 int alligator_log_pos = 150;
 int alligator_open_log_pos = 400;
+int turtle_log_pos = 0;
 
-
+//number of enemies
 int number_of_trucks = 4;
 int number_of_trucks2 = 3;
 int number_of_cars = 5;
 int number_of_tractors = 4;
 int number_of_cruisers = 5;
-int number_of_small_logs = 3;
+int number_of_small_logs = 4;
 int number_of_medium_logs = 3;
 int number_of_large_logs = 3;
 int number_of_alligator_logs = 2;
 int number_of_alligator_open_logs = 2;
+int number_of_turtle_logs = 5;
+int number_of_lives = 5;
 
-
-//logical status = true;
-
-//bottom to top order of animations
-
+//land animaitons
 forward animation drive(pixmap truck);
 forward animation drive2(pixmap racecar);
 forward animation drive3(pixmap truck2);
 forward animation drive4(pixmap tractor);
 forward animation drive5(pixmap cruiser);
 
-//forward animation swim3(pixmap small_log);
-//forward animation swim2(pixmap medium_log);
+//water animations
 forward animation swim(pixmap large_log);
 forward animation swim2(pixmap medium_log);
 forward animation swim3(pixmap small_log);
 forward animation swim4(pixmap alligator_log);
 forward animation swim5(pixmap alligator_open_log);
+forward animation swim6(pixmap turtle_log);
 
+//score area on the top left of the screen
+pixmap lives[number_of_lives];
+textbox thescore(drawing_order = 403, x= 0, y = window_height -50, text="Score:", size = 0.2, red = 1.0);
+textbox score(drawing_order = 402, x = 0, y = window_height - 100, text=myscore, size=0.2, red = 1.0);
+
+textbox gameoverlose(drawing_order = 410, x = 200, y = (window_height/2), text = "Game Over You Lose!", size = 0.2, red = 1.0, visible = 0);
+textbox gameoverlose1(drawing_order = 411, x = 200, y = (window_height/2) - 50, text = "Press L to Play Again", size = 0.2, red = 1.0, visible = 0);
+textbox gameoverwin(drawing_order = 412, x = 200, y = (window_height/2), text = "Game Over You Win!", size = 0.2, red = 1.0, visible = 0);
+textbox gameoverwin1(drawing_order = 413, x = 200, y = (window_height/2), text = "Press L to Play Again", size = 0.2, red = 1.0, visible = 0);
+rectangle blackscreen(drawing_order = 401, x= 0, y = 0, w= window_width, h= window_height, red = 0.0, blue = 0.0, green = 0.0, visible = 0);
+
+//boundries
 rectangle leftboundry(x= 0, y = 0, h = window_height, w = 120, red = 0.0, blue = 0.0, green = 0.0);
 rectangle rightboundry(x = window_width - 120, y = 0, h = window_height, w = 120, red = 0.0, blue = 0.0, green = 0.0);
 
+//arrays of land enemies
 pixmap cars[number_of_trucks];
 pixmap cars2[number_of_cars];
 pixmap cars3[number_of_trucks2];
 pixmap cars4[number_of_tractors];
 pixmap cars5[number_of_cruisers];
 
+//win spot pictures
+pixmap win1(x = 143, y = 312, filename="win.bmp", visible = 0);
+pixmap win2(x = 266, y = 312, filename="win.bmp", visible = 0);
+pixmap win3(x = 385, y = 312, filename="win.bmp", visible = 0);
+pixmap win4(x = 502, y = 312, filename="win.bmp", visible = 0);
+pixmap win5(x = 621, y = 312, filename="win.bmp", visible = 0);
 
+//main character
 pixmap frogger(x = (window_width/2) - (frogger_width/2), y=0, filename="frog.bmp");
 
+
+//arrays of water enemies
 pixmap largelogs[number_of_large_logs];
 pixmap mediumlogs[number_of_medium_logs];
 pixmap smalllogs[number_of_small_logs];
 pixmap alligators[number_of_alligator_logs];
 pixmap alligators_open[number_of_alligator_open_logs];
+pixmap turtles[number_of_turtle_logs];
 
-rectangle water(x = 0, y = 182, w = window_width, h = 129, red = 0.0, blue = 1.0, green = 0.0);
+//the water
+rectangle water(x = 0, y = 182, w = window_width, h = 179, red = 0.0, blue = 1.0, green = 0.0);
 
+//safe spots
 pixmap finish(x = 120, y = 311, filename = "finish.bmp", drawing_order = 400);
 pixmap sidewalkbottom(x = 0, y = 0, filename="background.bmp");
 pixmap sidewalktop(x=0, y =155, filename="background.bmp");
@@ -169,7 +195,7 @@ initialization
         {
                 smalllogs[i].animation_block = swim3;
                 smalllogs[i].x = small_log_pos;
-                small_log_pos += 266;
+                small_log_pos += 200;
                 smalllogs[i].y = 260;
                 smalllogs[i].filename = "smallLog.bmp";
         }
@@ -189,16 +215,48 @@ initialization
                 alligators_open[i].y = 234;
                 alligators_open[i].filename = "alligatoropen.bmp";
         }
+        for(i=0; i < number_of_turtle_logs; i += 1) // 5th row in water open alligators
+        {
+                turtles[i].animation_block = swim6;
+                turtles[i].x = turtle_log_pos;
+                turtle_log_pos += 160;
+                turtles[i].y = 285;
+                turtles[i].filename = "turtle.bmp";
+        }
+        for(i=0; i < number_of_lives; i += 1) // lives top left of screen
+        {
+                lives[i].x = live_pos;
+                live_pos += 24;
+                lives[i].y = window_height - 20;
+                lives[i].filename = "live.bmp";
+        }
 }
 
-
 animation drive(pixmap truck){
-
+        if(winstatus != 5 && number_of_lives != 0)
+        {
+                scoretimer += 1;
+                if (scoretimer == 70)
+                {
+                        myscore -= 1 + myscore/timededuction;
+                        score.text = myscore;
+                        if(myscore < 0)
+                        {
+                                myscore = 0;
+                                score.text = myscore;
+                        }
+                        scoretimer = 0;
+                }
+        }
         if(truck touches frogger)
         {
                 frogger.x = (window_width/2) - (frogger_width/2);
                 frogger.y = 0;
                 frogger.filename = "frog.bmp";
+                myscore = myscore/2;
+                score.text = myscore;
+                number_of_lives -= 1;
+                lives[number_of_lives].visible = 0;
         }
         if(truck.x == 0)
         {
@@ -212,6 +270,10 @@ animation drive2(pixmap racecar){
                 frogger.x = (window_width/2) - (frogger_width/2);
                 frogger.y = 0;
                 frogger.filename = "frog.bmp";
+                number_of_lives -= 1;
+                lives[number_of_lives].visible = 0;
+                myscore = myscore/2;
+                score.text = myscore;
         }
         if(racecar.x >= 800)
         {
@@ -224,8 +286,11 @@ animation drive3(pixmap truck2){
         {
                 frogger.x = (window_width/2) - (frogger_width/2);
                 frogger.y = 0;
+                number_of_lives -= 1;
+                lives[number_of_lives].visible = 0;
                 frogger.filename = "frog.bmp";
-
+                myscore = myscore/2;
+                score.text = myscore;
         }
         if(truck2.x <= 0)
         {
@@ -238,7 +303,11 @@ animation drive4(pixmap tractor){
         {
                 frogger.x = (window_width/2) - (frogger_width/2);
                 frogger.y = 0;
+                number_of_lives -= 1;
+                lives[number_of_lives].visible = 0;
                 frogger.filename = "frog.bmp";
+                myscore = myscore/2;
+                score.text = myscore;
         }
         if(tractor.x >= 800)
         {
@@ -252,7 +321,11 @@ animation drive5(pixmap cruiser){
         {
                 frogger.x = (window_width/2) - (frogger_width/2);
                 frogger.y = 0;
+                number_of_lives -= 1;
+                lives[number_of_lives].visible = 0;
                 frogger.filename = "frog.bmp";
+                myscore = myscore/2;
+                score.text = myscore;
         }
         if(cruiser.x <= 0)
         {
@@ -265,27 +338,93 @@ animation swim(pixmap large_log) //water section starts
         if(frogger.y >= 182 && frogger.y <= 311)
         {
 
-                if(frogger touches largelogs[0] || frogger touches largelogs[1] || frogger touches largelogs[2])
+                if(frogger touches largelogs[0] || frogger touches largelogs[1] || frogger touches largelogs[2]) //must modify these values if the number of largelogs are changed
                 {
 
-                        print("frogger.y = " + frogger.y + ",frogger.x = " + frogger.x);
                 }
-                else if(frogger touches mediumlogs[0] || frogger touches mediumlogs[1] || frogger touches mediumlogs[2])
+                else if(frogger touches mediumlogs[0] || frogger touches mediumlogs[1] || frogger touches mediumlogs[2])//must modify these values if the number of medium logs are changed
                 {
-
-                        print("frogger.y = " + frogger.y + ",frogger.x = " + frogger.x);
                 }
-                else if(frogger touches smalllogs[0] || frogger touches smalllogs[1] || frogger touches smalllogs[2]){}
-                else if(frogger touches alligators[0] || frogger touches alligators[1]){}
-                else if(frogger touches alligators_open[0]|| frogger touches alligators_open[1]){}
-                else
+                else if(frogger touches smalllogs[0] || frogger touches smalllogs[1] || frogger touches smalllogs[2] || frogger touches smalllogs[3]){} //must modify these values if the number of small logs are changed
+                else if(frogger touches alligators[0] || frogger touches alligators[1]){} //must modify these if the number of alligators closed is changed
+                else if(frogger touches alligators_open[0]|| frogger touches alligators_open[1]){} //must modify these values if the number of alligators open is changed
+                else if(frogger touches turtles[0] || frogger touches turtles[1] || frogger touches turtles[2] || frogger touches turtles[3] || frogger touches turtles[4]){} //must modify these values if the number of turtles is changed 
+                else //death
                 {
                         frogger.x = (window_width/2) - (frogger_width/2);
                         frogger.y = 0;
+                        number_of_lives -= 1;
+                        lives[number_of_lives].visible = 0;
                         frogger.filename = "frog.bmp";
+                        myscore = myscore/2;
+                        score.text = myscore;
                 }
         }
+        if(frogger.y >= 302)
+        {
 
+                if(win1.visible == 0 && frogger touches win1)
+                {
+                        win1.visible = 1;
+                        frogger.x = (window_width/2) - (frogger_width/2);
+                        frogger.y = 0;
+                        frogger.filename = "frog.bmp";
+                        myscore = myscore*2;
+                        score.text = myscore;
+                        winstatus += 1;
+                }
+
+                else if(win2.visible == 0 && frogger touches win2)
+                {
+                        win2.visible = 1;
+                        frogger.x = (window_width/2) - (frogger_width/2);
+                        frogger.y = 0;
+                        frogger.filename = "frog.bmp";
+                        myscore = myscore*2;
+                        score.text = myscore;
+                        winstatus += 1;
+                }
+                else  if(win3.visible == 0 && frogger touches win3)
+                {
+                        win3.visible = 1;
+                        frogger.x = (window_width/2) - (frogger_width/2);
+                        frogger.y = 0;
+                        frogger.filename = "frog.bmp";
+                        myscore = myscore*2;
+                        score.text = myscore;
+                        winstatus += 1;
+                }
+                else if(win4.visible == 0 && frogger touches win4)
+                {
+                        win4.visible = 1;
+                        frogger.x = (window_width/2) - (frogger_width/2);
+                        frogger.y = 0;
+                        frogger.filename = "frog.bmp";
+                        myscore = myscore*2;
+                        score.text = myscore;
+                        winstatus += 1;
+                }
+                else if(win5.visible == 0 && frogger touches win5)
+                {
+                        win5.visible = 1;
+                        frogger.x = (window_width/2) - (frogger_width/2);
+                        frogger.y = 0;
+                        frogger.filename = "frog.bmp";
+                        myscore = myscore*2;
+                        score.text = myscore;
+                        winstatus +=1;
+                }
+                else //death
+                {
+                        frogger.x = (window_width/2) - (frogger_width/2);
+                        frogger.y = 0;
+                        number_of_lives -= 1;
+                        lives[number_of_lives].visible = 0;
+                        frogger.filename = "frog.bmp";
+                        myscore = myscore/2;
+                        score.text = myscore;
+                }
+        }
 
         if(large_log touches frogger)
         {
@@ -295,6 +434,70 @@ animation swim(pixmap large_log) //water section starts
         {
                 large_log.x = 0;
         }
+        if(frogger touches rightboundry)
+        {
+                frogger.x = (window_width/2) - (frogger_width/2);
+                frogger.y = 0;
+                number_of_lives -= 1;
+                lives[number_of_lives].visible = 0;
+                frogger.filename = "frog.bmp";
+                myscore = myscore/2;
+                score.text = myscore;
+        }
+        if(frogger touches leftboundry)
+        {
+                frogger.x = (window_width/2) - (frogger_width/2);
+                frogger.y = 0;
+                number_of_lives -= 1;
+                lives[number_of_lives].visible = 0;
+                frogger.filename = "frog.bmp";
+                myscore = myscore/2;
+                score.text = myscore;
+        } 
+
+        if(winstatus == 5) //win game everything freezes
+        {
+                blackscreen.visible = 1;
+                gameoverwin.visible = 1; 
+                gameoverwin1.visible = 1;
+
+                frogger_increment_x = 0;
+                frogger_increment_y = 0;
+                car_inc_x = 0;
+                tractor_inc_x = 0;
+                traffic_inc_x = 0;
+                traffic2_inc_x = 0;
+                cruiser_inc_x = 0;
+                small_log_inc_x = 0;
+                medium_log_inc_x = 0;
+                large_log_inc_x = 0;
+                alligator_log_inc_x = 0;
+                alligator_open_log_inc_x = 0;
+                turtle_log_inc_x = 0;
+
+        }
+        if(number_of_lives == 0)
+        {
+                blackscreen.visible = 1;
+                gameoverlose.visible = 1;
+                gameoverlose1.visible =1;
+
+                frogger_increment_x = 0;
+                frogger_increment_y = 0;
+                car_inc_x = 0;
+                tractor_inc_x = 0;
+                traffic_inc_x = 0;
+                traffic2_inc_x = 0;
+                cruiser_inc_x = 0;
+                small_log_inc_x = 0;
+                medium_log_inc_x = 0;
+                large_log_inc_x = 0;
+                alligator_log_inc_x = 0;
+                alligator_open_log_inc_x = 0;
+                turtle_log_inc_x = 0;
+        }
+
+
         large_log.x += large_log_inc_x;
 }
 animation swim2(pixmap medium_log)
@@ -329,34 +532,119 @@ animation swim5(pixmap alligator_open_log) //open aligators
                 alligator_open_log.x = 0;
         alligator_open_log.x += alligator_open_log_inc_x;
 }
+animation swim6(pixmap turtle_log) // turtle row
+{
+        if(turtle_log touches frogger)
+                frogger.x += turtle_log_inc_x;
+        if(turtle_log.x >= window_width)
+                turtle_log.x = 0;
+        turtle_log.x += turtle_log_inc_x;
+}
 
 on leftarrow
 {
-        if(frogger.x > 120)
+        if(winstatus != 5 && number_of_lives != 0)
+        {
                 frogger.x -= frogger_increment_x;
-        frogger.filename = "frogleft.bmp";
-       }
-        on rightarrow
+                frogger.filename = "frogleft.bmp";
+        }
+}
+on rightarrow
+{
+        if(winstatus != 5 && number_of_lives != 0)
         {
-                if(frogger.x < window_width - frogger_width - 120)
-                        frogger.x += frogger_increment_y;
+                frogger.x += frogger_increment_y;
                 frogger.filename = "frogright.bmp";
-
-
         }
-        on uparrow
+}
+on uparrow
+{
+        if(winstatus != 5 && number_of_lives != 0)
         {
-                if(frogger.y < window_height - frogger_height)
-                        frogger.y += frogger_increment_y;
+                frogger.y += frogger_increment_y;
                 frogger.filename = "frog.bmp";
-
-
-
+                myscore += 10;
+                score.text = myscore;
         }
-        on downarrow
+
+}
+on downarrow
+{
+        if(winstatus != 5 && frogger.y != 0 && number_of_lives != 0)
         {
-                if(frogger.y > 0)
-                        frogger.y -= frogger_increment_y;
+                frogger.y -= frogger_increment_y;
                 frogger.filename = "frogdown.bmp";
-
+                myscore -= 5;
+                score.text = myscore;
         }
+}
+on lkey //game restart
+{
+
+        frogger_increment_x = 28;
+        frogger_increment_y = 26;
+
+        //enemy increments
+        car_inc_x = 4;
+        tractor_inc_x = 16;
+        traffic_inc_x = 2;
+        traffic2_inc_x = 8;
+        cruiser_inc_x = 24;
+        small_log_inc_x = 6;
+        medium_log_inc_x = 8;
+        large_log_inc_x = 6;
+        alligator_log_inc_x = 15;
+        alligator_open_log_inc_x = 15;
+        turtle_log_inc_x = 13;
+
+        //win objectives
+        winstatus = 0;
+        myscore = 0;
+        timededuction = 100;
+        scoretimer = 0;
+
+        //starting positions of enemies
+        live_pos = 0;
+        truck_pos = 0; 
+        truck_pos2= 800;
+        car_pos = 0;
+        tractor_pos = 0;
+        cruiser_pos = 0;
+        small_log_pos = 0;
+        medium_log_pos = 0;
+        large_log_pos = 0;
+        alligator_log_pos = 150;
+        alligator_open_log_pos = 400;
+        turtle_log_pos = 0;
+        //number of enemies
+        number_of_trucks = 4;
+        number_of_trucks2 = 3;
+        number_of_cars = 5;
+        number_of_tractors = 4;
+        number_of_cruisers = 5;
+        number_of_small_logs = 4;
+        number_of_medium_logs = 3;
+        number_of_large_logs = 3;
+        number_of_alligator_logs = 2;
+        number_of_alligator_open_logs = 2;
+        number_of_turtle_logs = 5;
+        number_of_lives = 5;
+
+        win1.visible = 0;
+        win2.visible = 0;
+        win3.visible = 0;
+        win4.visible = 0;
+        win5.visible = 0;
+
+        blackscreen.visible = 0;
+        gameoverlose.visible = 0;
+        gameoverlose1.visible = 0;
+        gameoverwin.visible = 0;
+        gameoverwin1.visible = 0;
+        lives[0].visible = 1;
+        lives[1].visible = 1;
+        lives[2].visible = 1;
+        lives[3].visible = 1;
+        lives[4].visible = 1;
+        score.text = myscore;
+}
